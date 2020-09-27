@@ -117,7 +117,7 @@ main(int argc, char *argv[])
     }
 
     if(argc <= 1){
-        uniqtest(0, "", cflag, dflag, iflag);
+        uniq(0, "", cflag, dflag, iflag);
         exit();
     }
 
