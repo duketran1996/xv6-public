@@ -20,81 +20,81 @@ char buf[512];
 void
 uniq(int fd, char *name, int cflag, int dflag, int iflag)
 {
-  //Allocate prev and curr memory
-  char *prev = (char*) malloc(1024*sizeof(char));
-  char *curr = (char*) malloc(1024*sizeof(char));
-  //Initialize a null value at index 0
-  prev[0] = 0;
-  curr[0] = 0;
-  int count = 0;
-  int repeat_count = 1;
-  int line_count = 0;
-  int i, n;
+    //Allocate prev and curr memory
+    char *prev = (char*) malloc(1024*sizeof(char));
+    char *curr = (char*) malloc(1024*sizeof(char));
 
-  while((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i <= n; i++) {
-        if ((buf[i] == '\n') || (buf[i] == '\0')) {
-        curr[count] = '\n';
-        curr[count+1] = 0;
+    //Initialize a null value at index 0
+    prev[0] = 0;
+    curr[0] = 0;
+    int count = 0;
+    int repeat_count = 1;
+    int line_count = 0;
+    int i, n;
 
-        int compare = strcmp(prev, curr);
-        
-        if ((line_count != 0) && (compare != 0)) {
-            if (cflag) {
-                printf(1, "%d ", repeat_count);
-            }
-            if (dflag) {
-                if (repeat_count > 1) {
-                    printf(1, "%s", prev);
+    while((n = read(fd, buf, sizeof(buf))) > 0) {
+        for (i = 0; i <= n; i++) {
+            if ((buf[i] == '\n') || (buf[i] == '\0')) {
+                curr[count] = '\n';
+                curr[count+1] = 0;
+                int compare = strcmp(prev, curr);
+                
+                if ((line_count != 0) && (compare != 0)) {
+                    if (cflag) {
+                        printf(1, "%d ", repeat_count);
+                    }
+                    if (dflag) {
+                        if (repeat_count > 1) {
+                            printf(1, "%s", prev);
+                        }
+                    } else {
+                        printf(1, "%s", prev);
+                    }
+                    repeat_count = 1;
+                } else if ((line_count != 0) && (compare == 0)) {
+                    repeat_count++;
                 }
-            } else {
-                printf(1, "%s", prev);
-            }
-            repeat_count = 1;
-        } else if ((line_count != 0) && (compare == 0)) {
-            repeat_count++;
-        }
-        if (buf[i] == '\0') {
-            if (cflag) {
-                if (strcmp(curr, "\n") == 0) {
-                    repeat_count--;
+                if (buf[i] == '\0') {
+                    if (cflag) {
+                        if (strcmp(curr, "\n") == 0) {
+                            repeat_count--;
+                        }
+                        printf(1, "%d ", repeat_count);
+                    }
+                    if (dflag) {
+                        if (repeat_count > 1) {
+                            printf(1, "%s", curr);
+                        }
+                    } else {
+                        printf(1, "%s", curr);
+                    }
+                    break;
+                    repeat_count = 1;
                 }
-                printf(1, "%d ", repeat_count);
-            }
-            if (dflag) {
-                if (repeat_count > 1) {
-                    printf(1, "%s", curr);
-                }
-            } else {
-                printf(1, "%s", curr);
-            }
-            break;
-            repeat_count = 1;
-        }
-        strcpy(prev, curr);
-        line_count++;
-        curr = (char*) malloc(20*sizeof(char));
-        count = 0;
-        } else {
-            if (iflag) {
-                int ascii = (int) buf[i];
-                if ((ascii >= 65) && (ascii <= 90)) {
-                    ascii += 32;
-                    curr[count] = (char) ascii;
+                strcpy(prev, curr);
+                line_count++;
+                curr = (char*) malloc(20*sizeof(char));
+                count = 0;
                 } else {
-                    curr[count] = buf[i];
+                    if (iflag) {
+                        int ascii = (int) buf[i];
+                        if ((ascii >= 65) && (ascii <= 90)) {
+                            ascii += 32;
+                            curr[count] = (char) ascii;
+                        } else {
+                            curr[count] = buf[i];
+                        }
+                    } else {
+                        curr[count] = buf[i];
+                    }
+                    count++;
                 }
-            } else {
-                curr[count] = buf[i];
             }
-            count++;
         }
+        if(n < 0){
+        printf(1, "uniq: read error\n");
+        exit();
     }
-  }
-  if(n < 0){
-    printf(1, "uniq: read error\n");
-    exit();
-  }
 }
 
 int
@@ -133,6 +133,7 @@ main(int argc, char *argv[])
         printf(1, "uniq: cannot open %s\n", argv[argc-1]);
         exit();
     }
+
     uniq(fd, argv[argc-1], cflag, dflag, iflag);
     close(fd);
     exit();
