@@ -1,3 +1,16 @@
+/*
+ * Author: Duc Tran, Lebohang McCallum
+ * File: uniq.c
+ * Purpose: Count unique adjacent line. Similar to Linux uniq command.
+ * Usage: 
+ * uniq filename: will print unique line if there are two adjacent identical line.
+ * Argument:
+ * -c: print count of line for both unique and none unique.
+ * -d: print only line that is repeated.
+ * -i: ignore case in string.
+ * Language:  C
+ */
+
 #include "types.h"
 #include "stat.h"
 #include "user.h"
@@ -5,10 +18,12 @@
 char buf[512];
 
 void
-uniqtest(int fd, char *name, int cflag, int dflag, int iflag)
+uniq(int fd, char *name, int cflag, int dflag, int iflag)
 {
-  char *prev = (char*) malloc(20*sizeof(char));
-  char *curr = (char*) malloc(20*sizeof(char));
+  //Allocate prev and curr memory
+  char *prev = (char*) malloc(1024*sizeof(char));
+  char *curr = (char*) malloc(1024*sizeof(char));
+  //Initialize a null value at index 0
   prev[0] = 0;
   curr[0] = 0;
   int count = 0;
@@ -77,7 +92,7 @@ uniqtest(int fd, char *name, int cflag, int dflag, int iflag)
     }
   }
   if(n < 0){
-    printf(1, "uniqread: read error\n");
+    printf(1, "uniq: read error\n");
     exit();
   }
 }
@@ -86,16 +101,11 @@ int
 main(int argc, char *argv[])
 {
     int fd, i;
-
-    if(argc <= 1){
-        exit();
-    }
-
     int cflag = 0;
     int dflag = 0;
     int iflag = 0;
-
-    for(i = 1; i < argc-1; i++){
+   
+    for(i = 1; i < argc; i++){
         char *arg = argv[i];
         if (strcmp(arg, "-c") == 0) {
             cflag = 1;
@@ -106,12 +116,24 @@ main(int argc, char *argv[])
         }
     }
 
+    if(argc <= 1){
+        uniqtest(0, "", cflag, dflag, iflag);
+        exit();
+    }
+
+    //check if argument piped so last arg is none or "-c" etc:
+    if(strcmp(argv[argc-1], "-c") == 0 
+        || strcmp(argv[argc-1], "-d") == 0
+        || strcmp(argv[argc-1], "-i") == 0) {
+        uniq(0, "", cflag, dflag, iflag);
+        exit();
+    }
+
     if((fd = open(argv[argc-1], 0)) < 0){
         printf(1, "uniq: cannot open %s\n", argv[argc-1]);
         exit();
     }
-    uniqtest(fd, argv[argc-1], cflag, dflag, iflag);
+    uniq(fd, argv[argc-1], cflag, dflag, iflag);
     close(fd);
- 
     exit();
 }
