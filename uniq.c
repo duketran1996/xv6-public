@@ -122,6 +122,11 @@ main(int argc, char *argv[])
         }
     }
 
+    if ((cflag == 1) && (dflag == 1)) {
+        printf(1, "-c and -d won’t appear at the same time.\n");
+        exit();
+    }
+
     if(argc <= 1){
         uniq(0, "", cflag, dflag, iflag);
         exit();
