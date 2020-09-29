@@ -62,7 +62,9 @@ uniq(int fd, char *name, int cflag, int dflag, int iflag)
                             if (strcmp(curr, "\n") == 0) {
                                 repeat_count--;
                             }
-                            printf(1, "%d ", repeat_count);
+                            if (repeat_count > 0) {
+                                printf(1, "%d ", repeat_count);
+                            }
                         }
                         if (dflag) {
                             if (repeat_count > 1) {
