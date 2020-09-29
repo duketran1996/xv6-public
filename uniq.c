@@ -40,33 +40,37 @@ uniq(int fd, char *name, int cflag, int dflag, int iflag)
                 int compare = strcmp(prev, curr);
                 
                 if ((line_count != 0) && (compare != 0)) {
-                    if (cflag) {
-                        printf(1, "%d ", repeat_count);
-                    }
-                    if (dflag) {
-                        if (repeat_count > 1) {
+                    if (repeat_count > 0) {
+                        if (cflag) {
+                            printf(1, "%d ", repeat_count);
+                        }
+                        if (dflag) {
+                            if (repeat_count > 1) {
+                                printf(1, "%s", prev);
+                            }
+                        } else {
                             printf(1, "%s", prev);
                         }
-                    } else {
-                        printf(1, "%s", prev);
                     }
                     repeat_count = 1;
                 } else if ((line_count != 0) && (compare == 0)) {
                     repeat_count++;
                 }
                 if (buf[i] == '\0') {
-                    if (cflag) {
-                        if (strcmp(curr, "\n") == 0) {
-                            repeat_count--;
+                    if (repeat_count > 0) {
+                        if (cflag) {
+                            if (strcmp(curr, "\n") == 0) {
+                                repeat_count--;
+                            }
+                            printf(1, "%d ", repeat_count);
                         }
-                        printf(1, "%d ", repeat_count);
-                    }
-                    if (dflag) {
-                        if (repeat_count > 1) {
+                        if (dflag) {
+                            if (repeat_count > 1) {
+                                printf(1, "%s", curr);
+                            }
+                        } else {
                             printf(1, "%s", curr);
                         }
-                    } else {
-                        printf(1, "%s", curr);
                     }
                     break;
                     repeat_count = 1;
