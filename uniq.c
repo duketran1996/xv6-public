@@ -123,7 +123,7 @@ main(int argc, char *argv[])
     }
 
     if ((cflag == 1) && (dflag == 1)) {
-        printf(1, "-c and -d won’t appear at the same time.\n");
+        printf(1, "-c and -d will not appear at the same time.\n");
         exit();
     }
 
