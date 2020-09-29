@@ -1,9 +1,9 @@
 /*
  * Author: Duc Tran, Lebohang McCallum
  * File: hello.c
- * Purpose: Print Hello, world! message to console.
+ * Purpose: Print Hello world message to console.
  * Usage: 
- * hello: will print "Hello, world!" message to console.
+ * hello: will print "Hello world" message to console.
  * Language:  C
  */
 
@@ -11,6 +11,6 @@
 #include "user.h"
 
 int main() {
-	printf(1, "Hello, world!\n");
+	printf(1, "Hello world\n");
 	exit();
 }
