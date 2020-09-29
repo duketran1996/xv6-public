@@ -79,7 +79,7 @@ uniq(int fd, char *name, int cflag, int dflag, int iflag)
                 }
                 strcpy(prev, curr);
                 line_count++;
-                curr = (char*) malloc(20*sizeof(char));
+                curr = (char*) malloc(1024*sizeof(char));
                 count = 0;
                 } else {
                     if (iflag) {
